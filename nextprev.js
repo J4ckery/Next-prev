@@ -104,8 +104,8 @@
     });
 
     // 👇 HIDE WRAPPERS
-    const prevWrapper = document.querySelector("[Previous-link-block]");
-    const nextWrapper = document.querySelector("[Next-link-block]");
+    const prevWrapper = document.querySelector("Previous-link-block");
+    const nextWrapper = document.querySelector("Next-link-block");
 
     if (!prevExists && prevWrapper) {
       prevWrapper.style.display = "none";
