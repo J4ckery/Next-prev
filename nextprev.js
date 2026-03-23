@@ -22,7 +22,7 @@
     var prevLink =
       parent?.previousElementSibling?.querySelector("a") || null;
 
-    // ❌ NO LOOPING (no fallback to first/last)
+    // ❌ NO LOOPING
 
     return {
       prevHref: prevLink?.getAttribute("href") || null,
@@ -44,47 +44,38 @@
         legacySelector: "[np-articles-next-btn]",
         attribute: "href",
         value: data.nextHref,
-        type: "next",
       },
       {
         selector: "[r-prevnext-next-text]",
         legacySelector: "[np-articles-next-text]",
         attribute: "innerText",
         value: data.nextTitle,
-        type: "next",
       },
       {
         selector: "[r-prevnext-prev-btn]",
         legacySelector: "[np-articles-prev-btn]",
         attribute: "href",
         value: data.prevHref,
-        type: "prev",
       },
       {
         selector: "[r-prevnext-prev-text]",
         legacySelector: "[np-articles-prev-text]",
         attribute: "innerText",
         value: data.prevTitle,
-        type: "prev",
       },
       {
         selector: "[r-prevnext-prev-img]",
         legacySelector: "[np-articles-prev-img]",
         attribute: "src",
         value: data.prevImgSrc,
-        type: "prev",
       },
       {
         selector: "[r-prevnext-next-img]",
         legacySelector: "[np-articles-next-img]",
         attribute: "src",
         value: data.nextImgSrc,
-        type: "next",
       },
     ];
-
-    let prevExists = !!data.prevHref;
-    let nextExists = !!data.nextHref;
 
     mappings.forEach((item) => {
       const el = document.querySelector(
@@ -93,27 +84,24 @@
 
       if (!el) return;
 
-      // set values if they exist
-      if (item.value) {
-        if (item.attribute === "innerText") {
-          el.innerText = item.value;
-        } else {
-          el.setAttribute(item.attribute, item.value);
-        }
+      // 👇 find wrapper (your Webflow class names)
+      const wrapper = el.closest(
+        ".previous-link-block, .next-link-block"
+      );
+
+      // 👉 if no value → hide whole wrapper
+      if (!item.value) {
+        if (wrapper) wrapper.style.display = "none";
+        return;
+      }
+
+      // 👉 otherwise apply values
+      if (item.attribute === "innerText") {
+        el.innerText = item.value;
+      } else {
+        el.setAttribute(item.attribute, item.value);
       }
     });
-
-    // 👇 HIDE WRAPPERS
-    const prevWrapper = document.querySelectorAll(".previous-link-block");
-    const nextWrapper = document.querySelectorAll(".next-link-block");
-
-    if (!prevExists && prevWrapper) {
-      prevWrapper.style.display = "none";
-    }
-
-    if (!nextExists && nextWrapper) {
-      nextWrapper.style.display = "none";
-    }
   }
 
   function init() {
@@ -129,7 +117,8 @@
     applyData(data);
   }
 
-  init();
+  // 👇 ensures DOM is loaded (important for Webflow)
+  document.addEventListener("DOMContentLoaded", init);
 
   return {};
 });
