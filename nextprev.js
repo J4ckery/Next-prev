@@ -22,8 +22,6 @@
     var prevLink =
       parent?.previousElementSibling?.querySelector("a") || null;
 
-    // ❌ NO LOOPING
-
     return {
       prevHref: prevLink?.getAttribute("href") || null,
       prevTitle: prevLink?.innerText || null,
@@ -77,6 +75,7 @@
       },
     ];
 
+    // 👉 Apply values
     mappings.forEach((item) => {
       const el = document.querySelector(
         `${item.selector}, ${item.legacySelector}`
@@ -84,24 +83,30 @@
 
       if (!el) return;
 
-      // 👇 find wrapper (your Webflow class names)
-      const wrapper = el.closest(
-        ".previous-link-block, .next-link-block"
-      );
+      if (!item.value) return;
 
-      // 👉 if no value → hide whole wrapper
-      if (!item.value) {
-        if (wrapper) wrapper.style.display = "none";
-        return;
-      }
-
-      // 👉 otherwise apply values
       if (item.attribute === "innerText") {
         el.innerText = item.value;
       } else {
         el.setAttribute(item.attribute, item.value);
       }
     });
+
+    // 👇 HIDE WRAPPERS (correct + reliable)
+    const prevWrappers = document.querySelectorAll(".previous-link-block");
+    const nextWrappers = document.querySelectorAll(".next-link-block");
+
+    if (!data.prevHref) {
+      prevWrappers.forEach((el) => {
+        el.style.display = "none";
+      });
+    }
+
+    if (!data.nextHref) {
+      nextWrappers.forEach((el) => {
+        el.style.display = "none";
+      });
+    }
   }
 
   function init() {
@@ -117,7 +122,6 @@
     applyData(data);
   }
 
-  // 👇 ensures DOM is loaded (important for Webflow)
   document.addEventListener("DOMContentLoaded", init);
 
   return {};
