@@ -35,76 +35,76 @@
     };
   }
 
- function applyData(data) {
-  const mappings = [
-    {
-      selector: "[r-prevnext-next-btn]",
-      legacySelector: "[np-articles-next-btn]",
-      attribute: "href",
-      value: data.nextHref,
-      type: "next",
-    },
-    {
-      selector: "[r-prevnext-next-text]",
-      legacySelector: "[np-articles-next-text]",
-      attribute: "innerText",
-      value: data.nextTitle,
-      type: "next",
-    },
-    {
-      selector: "[r-prevnext-prev-btn]",
-      legacySelector: "[np-articles-prev-btn]",
-      attribute: "href",
-      value: data.prevHref,
-      type: "prev",
-    },
-    {
-      selector: "[r-prevnext-prev-text]",
-      legacySelector: "[np-articles-prev-text]",
-      attribute: "innerText",
-      value: data.prevTitle,
-      type: "prev",
-    },
-    {
-      selector: "[r-prevnext-prev-img]",
-      legacySelector: "[np-articles-prev-img]",
-      attribute: "src",
-      value: data.prevImgSrc,
-      type: "prev",
-    },
-    {
-      selector: "[r-prevnext-next-img]",
-      legacySelector: "[np-articles-next-img]",
-      attribute: "src",
-      value: data.nextImgSrc,
-      type: "next",
-    },
-  ];
+  function applyData(data) {
+    const mappings = [
+      {
+        selector: "[r-prevnext-next-btn]",
+        legacySelector: "[np-articles-next-btn]",
+        attribute: "href",
+        value: data.nextHref,
+        type: "next",
+      },
+      {
+        selector: "[r-prevnext-next-text]",
+        legacySelector: "[np-articles-next-text]",
+        attribute: "innerText",
+        value: data.nextTitle,
+        type: "next",
+      },
+      {
+        selector: "[r-prevnext-prev-btn]",
+        legacySelector: "[np-articles-prev-btn]",
+        attribute: "href",
+        value: data.prevHref,
+        type: "prev",
+      },
+      {
+        selector: "[r-prevnext-prev-text]",
+        legacySelector: "[np-articles-prev-text]",
+        attribute: "innerText",
+        value: data.prevTitle,
+        type: "prev",
+      },
+      {
+        selector: "[r-prevnext-prev-img]",
+        legacySelector: "[np-articles-prev-img]",
+        attribute: "src",
+        value: data.prevImgSrc,
+        type: "prev",
+      },
+      {
+        selector: "[r-prevnext-next-img]",
+        legacySelector: "[np-articles-next-img]",
+        attribute: "src",
+        value: data.nextImgSrc,
+        type: "next",
+      },
+    ];
 
-  mappings.forEach((item) => {
-    const el = document.querySelector(
-      `${item.selector}, ${item.legacySelector}`
-    );
+    mappings.forEach((item) => {
+      const el = document.querySelector(
+        `${item.selector}, ${item.legacySelector}`
+      );
 
-    if (!el) return;
+      if (!el) return;
 
-    // 👇 find the actual link block wrapper (<a>)
-    const linkBlock = el.closest("a");
+      // find the actual link block wrapper (<a>) or fallback to the element itself
+      const linkBlock = el.closest("a") || el;
 
-    // 👉 if no value → hide the whole link block
-    if (!item.value) {
-      if (linkBlock) linkBlock.style.display = "none";
-      return;
-    }
+      // hide if value is missing
+      if (!item.value) {
+        linkBlock.style.display = "none";
+        return;
+      }
 
-    // 👉 otherwise set values
-    if (item.attribute === "innerText") {
-      el.innerText = item.value;
-    } else {
-      el.setAttribute(item.attribute, item.value);
-    }
-  });
-}
+      // otherwise set values
+      if (item.attribute === "innerText") {
+        el.innerText = item.value;
+      } else {
+        el.setAttribute(item.attribute, item.value);
+      }
+    });
+  }
 
   function init() {
     const current = document.querySelector(
